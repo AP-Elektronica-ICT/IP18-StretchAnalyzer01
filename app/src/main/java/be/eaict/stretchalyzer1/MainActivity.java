@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<Entry> yAXEScos = new ArrayList<>();
         double x = 0 ;
         int numDataPoints = 1000;
+
         for(int i=0;i<numDataPoints;i++){
             float sinFunction = Float.parseFloat(String.valueOf(Math.sin(x)));
             float cosFunction = Float.parseFloat(String.valueOf(Math.cos(x)));
