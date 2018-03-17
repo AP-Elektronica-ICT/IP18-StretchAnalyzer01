@@ -2,10 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/IP18-StretchAnalyzer01.iml" filepath="$PROJECT_DIR$/.idea/IP18-StretchAnalyzer01.iml" />
+      <module fileurl="file://$PROJECT_DIR$/IP18-StretchAnalyzer01.iml" filepath="$PROJECT_DIR$/IP18-StretchAnalyzer01.iml" />
+      <module fileurl="file://C:\Users\shado\Desktop\IP\IP18-StretchAnalyzer01\.idea\IP18-StretchAnalyzer01.iml" filepath="C:\Users\shado\Desktop\IP\IP18-StretchAnalyzer01\.idea\IP18-StretchAnalyzer01.iml" />
       <module fileurl="file://C:\Users\shado\AndroidStudioProjects\IP18-StretchAnalyzer01\IP18-StretchAnalyzer01.iml" filepath="C:\Users\shado\AndroidStudioProjects\IP18-StretchAnalyzer01\IP18-StretchAnalyzer01.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://C:\Users\shado\AndroidStudioProjects\IP18-StretchAnalyzer01\app\app.iml" filepath="C:\Users\shado\AndroidStudioProjects\IP18-StretchAnalyzer01\app\app.iml" />
+      <module fileurl="file://$USER_HOME$/AndroidStudioProjects/IP18-StretchAnalyzer01/app/app.iml" filepath="$USER_HOME$/AndroidStudioProjects/IP18-StretchAnalyzer01/app/app.iml" />
     </modules>
   </component>
 </project>
