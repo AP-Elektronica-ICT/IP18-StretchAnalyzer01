@@ -14,17 +14,22 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    String line;
+    private String line;
+    private ArrayList<String> x = new ArrayList<>();
+    private ArrayList<String> y = new ArrayList<>();
+    private ArrayList<String> z = new ArrayList<>();
+    private ArrayList<String> mSec = new ArrayList<>();
+    private ArrayList<Double> aX = new ArrayList<>();
+    private ArrayList<Double> aY = new ArrayList<>();
+    private ArrayList<Double> aZ = new ArrayList<>();
+    private ArrayList<Double> sec = new ArrayList<>();
+    private ArrayList<Double> angle = new ArrayList<>();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
 
-        ArrayList<String> aX = new ArrayList<>();
-        ArrayList<String> aY = new ArrayList<>();
-        ArrayList<String> aZ = new ArrayList<>();
-        ArrayList<String> sec = new ArrayList<>();
 
         try{
             InputStream streamX = getAssets().open("Ax.txt");
@@ -38,19 +43,47 @@ public class MainActivity extends AppCompatActivity {
             BufferedReader readerSec = new BufferedReader(new InputStreamReader(streamSec));
 
             while((line = readerX.readLine()) != null)
-                aX.add(line);
+                x.add(line);
             while((line = readerY.readLine()) != null)
-                aY.add(line);
+                y.add(line);
             while((line = readerZ.readLine()) != null)
-                aZ.add(line);
+                z.add(line);
             while((line = readerSec.readLine()) != null)
-                sec.add(line);
+                mSec.add(line);
+            CalculateData();
         }
         catch (IOException e){
             e.printStackTrace();
         }
+    }
+    public void CalculateData(){
 
+        for (String data: x) {
+            Double tempX = Math.round((0.1475*(Double.parseDouble(data)) - 48.729) * 10000d) / 10000d;
+            Double minLimit;
+            if(tempX > -9.81)
+                minLimit = tempX;
+            else
+                minLimit = -9.81;
+            aX.add(minLimit);
 
+            tempX = Math.round((Math.asin(minLimit/9.81)/Math.PI * 180) * 1000000d) / 1000000d;
+            angle.add(tempX);
+        }
+        Log.d("data", Double.toString(angle.get(0)));
+        Log.d("data", Double.toString(angle.get(10)));
+        for (String data: y) {
+            Double tempY = Math.round((0.1474*(Double.parseDouble(data)) - 48.462) * 10000d) / 10000d;
+            aY.add(tempY);
+        }
+        for (String data: z) {
+            Double tempZ = Math.round((0.1486*(Double.parseDouble(data)) - 49.591) * 10000d) / 10000d;
+            aZ.add(tempZ);
+        }
+        for (String data: mSec) {
+            Double tempSec = (Double.parseDouble(data))/1000;
+            sec.add(tempSec);
+        }
 
     }
 }
