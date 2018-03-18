@@ -1,9 +1,12 @@
 package be.eaict.stretchalyzer1;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
@@ -31,11 +34,22 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Double> aZ = new ArrayList<>();
     private ArrayList<Double> sec = new ArrayList<>();
     private ArrayList<Double> angle = new ArrayList<>();
+    ImageView profileSettings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        profileSettings = findViewById(R.id.imgApplicationSettings);
+
+        profileSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                startActivity(intent);
+            }
+        });
+
 
         try{
             InputStream streamX = getAssets().open("Ax.txt");

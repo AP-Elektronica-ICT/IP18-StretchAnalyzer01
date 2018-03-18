@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_gravity="end"
+        android:layout_height="wrap_content"
+        android:id="@+id/imgApplicationSettingsready"
+        android:src="@drawable/ic_settings_black_24dp"
+        android:padding="3dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorPrimary"
+        android:textSize="40dp"
+        android:textAlignment="center"
+        android:layout_margin="10dp"
+        android:background="@drawable/border"
+        android:text="Are you ready to start stretching?"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ownPreset"
+        android:text="Own Preset"
+        android:background="@drawable/border"
+        android:layout_gravity="center"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp"
+        android:layout_marginBottom="5dp"
+        />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/presetOne"
+        android:text="Preset one"
+        android:background="@drawable/border"
+        android:layout_gravity="center"
+        android:paddingLeft="27sp"
+        android:paddingRight="27dp"
+        android:layout_marginBottom="5dp"
+        />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/presetTwo"
+        android:text="Preset Two"
+        android:background="@drawable/border"
+        android:layout_gravity="center"
+        android:paddingLeft="25sp"
+        android:paddingRight="25dp"
+        android:layout_marginBottom="5dp"
+        />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/presetThree"
+        android:text="Preset Three"
+        android:background="@drawable/border"
+        android:layout_gravity="center"
+        android:paddingLeft="20sp"
+        android:paddingRight="20dp"
+        android:layout_marginBottom="5dp"
+        />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/startRandom"
+        android:text="Start random"
+        android:background="@drawable/border"
+        android:layout_gravity="center"
+        android:textColor="#32CD32"
+        android:paddingLeft="18sp"
+        android:paddingRight="18dp"
+        android:layout_marginBottom="5dp"
+        />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/remindFive"
+        android:text="Remind in 5 minutes"
+        android:background="@drawable/border"
+        android:layout_gravity="center"
+        android:textColor="@color/colorAccent"
+        android:paddingLeft="3sp"
+        android:paddingRight="3dp"
+        android:layout_marginBottom="5dp"
+        />
+
+
+</LinearLayout>
