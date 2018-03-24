@@ -2,11 +2,14 @@ package be.eaict.stretchalyzer1;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
@@ -34,13 +37,16 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Double> aZ = new ArrayList<>();
     private ArrayList<Double> sec = new ArrayList<>();
     private ArrayList<Double> angle = new ArrayList<>();
+    TextView timer;
     ImageView profileSettings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         profileSettings = findViewById(R.id.imgApplicationSettings);
+        timer = findViewById(R.id.TimeLeft);
 
         profileSettings.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,6 +56,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        CountDownTimer countDownTimer = new CountDownTimer(120000, 1000){
+
+            public void onTick(long millisUntilFinished){
+                timer.setText(String.valueOf((millisUntilFinished/1000)));
+            }
+
+            public void onFinish(){
+                Toast toast = Toast.makeText(getApplicationContext(), "Workout time!", Toast.LENGTH_LONG);
+                toast.show();
+            }
+        }.start();
 
         try{
             InputStream streamX = getAssets().open("Ax.txt");
