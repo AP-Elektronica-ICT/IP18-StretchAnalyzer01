@@ -26,7 +26,7 @@ public class ExerciseActivity extends AppCompatActivity {
             }
         });
 
-        profileSettings = findViewById(R.id.imgApplicationSettings);
+        profileSettings = findViewById(R.id.imgSettings);
         profileSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

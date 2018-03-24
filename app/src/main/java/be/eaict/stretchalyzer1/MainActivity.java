@@ -1,8 +1,16 @@
 package be.eaict.stretchalyzer1;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.CountDownTimer;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -37,8 +45,11 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Double> aZ = new ArrayList<>();
     private ArrayList<Double> sec = new ArrayList<>();
     private ArrayList<Double> angle = new ArrayList<>();
+    public static final int NOTIFICATION_ID = 1;
     TextView timer;
     ImageView profileSettings;
+    Notification not;
+    Notification.Builder notBuilder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,15 +67,22 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        CountDownTimer countDownTimer = new CountDownTimer(120000, 1000){
+        notBuilder = new Notification.Builder(this)
+                .setSmallIcon(R.mipmap.ic_launcher_round)
+                .setContentTitle("StretchAlyzer")
+                .setContentText("Time to stretch!")
+                .setPriority(Notification.PRIORITY_MAX);
+
+
+        CountDownTimer countDownTimer = new CountDownTimer(12000, 1000){
 
             public void onTick(long millisUntilFinished){
                 timer.setText(String.valueOf((millisUntilFinished/1000)));
             }
 
             public void onFinish(){
-                Toast toast = Toast.makeText(getApplicationContext(), "Workout time!", Toast.LENGTH_LONG);
-                toast.show();
+                ShowNot();
+
             }
         }.start();
 
@@ -154,6 +172,33 @@ public class MainActivity extends AppCompatActivity {
             Double tempSec = (Double.parseDouble(data))/1000;
             sec.add(tempSec);
         }
+
+    }
+
+    public void ShowNot(){
+        Intent intent = new Intent(this, ExerciseActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+        PendingIntent pendingIntent = PendingIntent.getActivities(this, 0, new Intent[]{intent}, PendingIntent.FLAG_ONE_SHOT);
+
+        Notification.Builder notBuilder = null;
+        NotificationManager notMgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel("channel_id", "Channel name",
+                    NotificationManager.IMPORTANCE_HIGH);
+            notMgr.createNotificationChannel(channel);
+            notBuilder = new Notification.Builder(this, "channel_id");
+        } else {
+            notBuilder = new Notification.Builder(this);
+        }
+        notBuilder
+                .setContentTitle("StretchAlyzer")
+                .setContentText("Time to stretch !")
+                .setSmallIcon(android.R.drawable.ic_dialog_alert)
+                .setFullScreenIntent(pendingIntent, true)
+                .setAutoCancel(true)
+                .setPriority(Notification.PRIORITY_HIGH);
+        Notification not = notBuilder.build();
+        notMgr.notify(NOTIFICATION_ID, not);
 
     }
 }
