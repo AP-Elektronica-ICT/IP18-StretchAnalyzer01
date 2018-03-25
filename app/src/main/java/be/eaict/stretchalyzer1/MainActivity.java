@@ -4,11 +4,13 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.CountDownTimer;
+import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -48,8 +50,6 @@ public class MainActivity extends AppCompatActivity {
     public static final int NOTIFICATION_ID = 1;
     TextView timer;
     ImageView profileSettings;
-    Notification not;
-    Notification.Builder notBuilder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,13 +66,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-        notBuilder = new Notification.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher_round)
-                .setContentTitle("StretchAlyzer")
-                .setContentText("Time to stretch!")
-                .setPriority(Notification.PRIORITY_MAX);
-
 
         CountDownTimer countDownTimer = new CountDownTimer(12000, 1000){
 
@@ -183,8 +176,7 @@ public class MainActivity extends AppCompatActivity {
         Notification.Builder notBuilder = null;
         NotificationManager notMgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel("channel_id", "Channel name",
-                    NotificationManager.IMPORTANCE_HIGH);
+            NotificationChannel channel = new NotificationChannel("channel_id", "Channel name", NotificationManager.IMPORTANCE_HIGH);
             notMgr.createNotificationChannel(channel);
             notBuilder = new Notification.Builder(this, "channel_id");
         } else {
@@ -196,7 +188,8 @@ public class MainActivity extends AppCompatActivity {
                 .setSmallIcon(android.R.drawable.ic_dialog_alert)
                 .setFullScreenIntent(pendingIntent, true)
                 .setAutoCancel(true)
-                .setPriority(Notification.PRIORITY_HIGH);
+                .setDefaults(Notification.DEFAULT_VIBRATE)
+                .setPriority(Notification.PRIORITY_MAX);
         Notification not = notBuilder.build();
         notMgr.notify(NOTIFICATION_ID, not);
 
