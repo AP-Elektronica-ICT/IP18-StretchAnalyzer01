@@ -8,6 +8,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.provider.Settings;
@@ -55,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
 
         profileSettings = findViewById(R.id.imgApplicationSettings);
         timer = findViewById(R.id.TimeLeft);
