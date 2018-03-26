@@ -1,9 +1,27 @@
 package be.eaict.stretchalyzer1;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.ActivityNotFoundException;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.media.MediaPlayer;
+import android.os.Build;
+import android.os.CountDownTimer;
+import android.provider.Settings;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
@@ -31,11 +49,46 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Double> aZ = new ArrayList<>();
     private ArrayList<Double> sec = new ArrayList<>();
     private ArrayList<Double> angle = new ArrayList<>();
+    public static final int NOTIFICATION_ID = 1;
+    TextView timer;
+    ImageView profileSettings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Button startNow = (Button) this.findViewById(R.id.ButtonStart);
+        startNow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ExerciseActivity.class);
+                startActivity(intent);
+            }
+        });
+        
+        profileSettings = findViewById(R.id.imgApplicationSettings);
+        timer = findViewById(R.id.TimeLeft);
+
+        profileSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        CountDownTimer countDownTimer = new CountDownTimer(12000, 1000){
+
+            public void onTick(long millisUntilFinished){
+                timer.setText(String.valueOf((millisUntilFinished/1000)));
+            }
+
+            public void onFinish(){
+                ShowNot();
+
+            }
+        }.start();
 
         try{
             InputStream streamX = getAssets().open("Ax.txt");
@@ -123,6 +176,33 @@ public class MainActivity extends AppCompatActivity {
             Double tempSec = (Double.parseDouble(data))/1000;
             sec.add(tempSec);
         }
+
+    }
+
+    public void ShowNot(){
+        Intent intent = new Intent(this, ExerciseActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+        PendingIntent pendingIntent = PendingIntent.getActivities(this, 0, new Intent[]{intent}, PendingIntent.FLAG_ONE_SHOT);
+
+        Notification.Builder notBuilder = null;
+        NotificationManager notMgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel("channel_id", "Channel name", NotificationManager.IMPORTANCE_HIGH);
+            notMgr.createNotificationChannel(channel);
+            notBuilder = new Notification.Builder(this, "channel_id");
+        } else {
+            notBuilder = new Notification.Builder(this);
+        }
+        notBuilder
+                .setContentTitle("StretchAlyzer")
+                .setContentText("Time to stretch !")
+                .setSmallIcon(android.R.drawable.ic_dialog_alert)
+                .setFullScreenIntent(pendingIntent, true)
+                .setAutoCancel(true)
+                .setDefaults(Notification.DEFAULT_VIBRATE)
+                .setPriority(Notification.PRIORITY_MAX);
+        Notification not = notBuilder.build();
+        notMgr.notify(NOTIFICATION_ID, not);
 
     }
 }
