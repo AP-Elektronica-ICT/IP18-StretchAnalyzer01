@@ -74,6 +74,20 @@ public class MainActivity extends AppCompatActivity {
         try
         {
             btSocket.getOutputStream().write('1');
+            try
+            {
+                int bytesAvailable = btSocket.getInputStream().available();
+                byte []packetBytes = new byte[bytesAvailable];
+                if(bytesAvailable > 0){
+                    btSocket.getInputStream().read(packetBytes);
+                    String test = new String(packetBytes);
+                    Log.d("receive", test);
+                }
+            }
+            catch (Exception e)
+            {
+                Log.d("Error", "not received");
+            }
         }
         catch (IOException e)
         {
