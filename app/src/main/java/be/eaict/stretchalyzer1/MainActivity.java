@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         
-        profileSettings = findViewById(R.id.imgApplicationSettings);
+        profileSettings = findViewById(R.id.imgUserSettings);
         timer = findViewById(R.id.TimeLeft);
 
         profileSettings.setOnClickListener(new View.OnClickListener() {

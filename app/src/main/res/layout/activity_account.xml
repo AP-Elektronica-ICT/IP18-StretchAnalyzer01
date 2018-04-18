@@ -245,9 +245,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
             style="@style/Widget.AppCompat.Button.Borderless.Colored"
-            android:id="@+id/btnCancelChanges"
+            android:id="@+id/btnLogout"
             android:textColor="@color/colorPrimary"
-            android:text="Cancel"/>
+            android:text="Logout"/>
 
         <Button
             android:layout_width="0dp"
