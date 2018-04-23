@@ -6,6 +6,8 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.support.annotation.RequiresPermission;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewDebug;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +31,7 @@ import com.google.firebase.database.ValueEventListener;
 import org.w3c.dom.Text;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,19 +49,20 @@ public class ExerciseActivity extends AppCompatActivity {
     private Button stopExercise;
     private Button btnConnect;
     private ImageView profileSettings;
-    private int reps = 5;
-    private boolean receiving = true;
+    private StringBuilder message = new StringBuilder();
     private String userID;
+    private Handler mHandler;
+    private TextView txt_repsRemaining;
     private static int REQUEST_ENABLE_BT = 1;
     static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private String address;
     BluetoothSocket btSocket;
     BluetoothAdapter myBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-    //Hier komt iets met een bluetooth connectie
-//    private List<List<String>> bluetoothData = new ArrayList<List<String>>();
     private Map<String , List<String>> bluetoothMapData = new HashMap<String  , List<String>>();
 
-    private int repsRemaining = 15;
+    private int repsRemaining = 5;
+    List<String> timeStamps = new ArrayList<String>();
+    List<String> values = new ArrayList<String>();
 
 
 
@@ -79,9 +84,8 @@ public class ExerciseActivity extends AppCompatActivity {
         profileSettings = findViewById(R.id.imgSettings);
         stopExercise = (Button) findViewById(R.id.bttnStop);
         btnConnect = (Button) findViewById(R.id.btn_connect);
+        txt_repsRemaining = (TextView) findViewById(R.id.txtRemaining);
 
-//        List<String> timeStamps = new ArrayList<String>();
-//        List<String> values = new ArrayList<String>();
 //        for (int i = 0; i < 10; i++) {
 //            timeStamps.add(String.valueOf(i));
 //
@@ -90,8 +94,7 @@ public class ExerciseActivity extends AppCompatActivity {
 //            values.add(String.valueOf((j+5)));
 //        }
 //
-//        bluetoothMapData.put("TimeStamps", timeStamps);
-//        bluetoothMapData.put("Values", values);
+
 //        bluetoothData.add(timeStamps);
 //        bluetoothData.add(values);
 
@@ -133,8 +136,7 @@ public class ExerciseActivity extends AppCompatActivity {
         });
 
         if (repsRemaining == 0){
-            Intent intent = new Intent(ExerciseActivity.this, DoneStretching.class);
-            startActivity(intent);
+
         }
 
     }
@@ -202,28 +204,84 @@ public class ExerciseActivity extends AppCompatActivity {
             toast.show();
         }
     }
+    /*mHandler = new Handler(){
+        public void handleMessage(android.os.Message msg){
+            if(msg.what == MESSAGE_READ){
+                String readMessage = null;
+                try {
+                    readMessage = new String((byte[]) msg.obj, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                mReadBuffer.setText(readMessage);
+            }
 
+            if(msg.what == CONNECTING_STATUS){
+                if(msg.arg1 == 1)
+                    mBluetoothStatus.setText("Connected to Device: " + (String)(msg.obj));
+                else
+                    mBluetoothStatus.setText("Connection Failed");
+            }
+        }
+    };*/
     public void GetData(){
-        while (reps > 0){
-            try
+        while (repsRemaining > 0){
+            /*try
             {
                 int bytesAvailable = btSocket.getInputStream().available();
-                byte[] packetBytes = new byte[bytesAvailable];
+                byte[] packetBytes = new byte[256];
                 if (bytesAvailable > 0) {
-                    btSocket.getInputStream().read(packetBytes);
+                    String readMessage = (String) btSocket.getInputStream().read(packetBytes);
+                    message.append(readMessage);
                     String data = new String(packetBytes);
                     if(data.length() > 6) {
                         Log.d("receive", data);
                         String[] splited = data.split("\\s+");
                         Log.d("receive", "data1 " + splited[0]);
                         Log.d("receive", "data2 " + splited[1]);
+                        timeStamps.add(splited[0]);
+                        values.add(splited[1]);
+                        repsRemaining --;
+                        txt_repsRemaining.setText(String.valueOf(repsRemaining));
                     }
                 }
+
             }
             catch (Exception e)
             {
                 Log.d("Error", "not received");
+            }*/
+
+            byte[] buffer = new byte[256];
+            int bytes;
+
+            while (true){
+                try{
+                    bytes = btSocket.getInputStream().available();
+                    if(bytes != 0){
+                        SystemClock.sleep(100);
+                        bytes = btSocket.getInputStream().available();
+                        bytes = btSocket.getInputStream().read(buffer, 0, bytes);
+
+                        String readMessage = new String((byte[]) bytes, "UTF-8");
+                    }
+                } catch (IOException e){
+
+                }
             }
+        }
+
+        bluetoothMapData.put("TimeStamps", timeStamps);
+        bluetoothMapData.put("Values", values);
+        WriteToDatabase();
+
+        try {
+            Intent intent = new Intent(ExerciseActivity.this, DoneStretching.class);
+            startActivity(intent);
+        }
+        catch (Exception e)
+        {
+            Log.d("Error", e.getMessage());
         }
     }
 }
