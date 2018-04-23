@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">StretchAlyzer1</string>
+    <string name="duration">Duration:</string>
+    <string name="reps">Reps:</string>
+    <string name="exercise">Exercise:</string>
+    <string name="stretching_done">Stretching done !</string>
+    <string name="_2m13s">2m13s</string>
+    <string name="_15">15</string>
+    <string name="simple_arm_stretch">Simple arm stretch</string>
+    <string name="close">Close</string>
 </resources>
