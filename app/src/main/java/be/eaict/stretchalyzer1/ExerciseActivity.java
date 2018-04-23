@@ -41,6 +41,7 @@ public class ExerciseActivity extends AppCompatActivity {
     private Button btnConnect;
     private ImageView profileSettings;
     private String userID;
+    private String exerciseDate;
     private static int REQUEST_ENABLE_BT = 1;
     static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private String address;
@@ -127,14 +128,16 @@ public class ExerciseActivity extends AppCompatActivity {
         long epochDate = System.currentTimeMillis();
         Date date = new Date(epochDate);
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MMMM-yyyy HH:mm");
-        myRef = database.getReference(userID).child(formatter.format(date));
+        exerciseDate = formatter.format(date);
+        myRef = database.getReference(userID).child(exerciseDate);
         myRef.setValue(bluetoothMapData);
     }
 
 //    protected void ReadDatabase(){
 //        long epochDate = System.currentTimeMillis();
 //        Date date = new Date(epochDate);
-//        myRef = database.getReference(userID).child(date.toString());
+//        SimpleDateFormat formatter = new SimpleDateFormat("dd-MMMM-yyyy HH:mm");
+//        myRef = database.getReference(userID).child(formatter.format(date));
 //        myRef.addValueEventListener(new ValueEventListener() {
 //            @Override
 //            public void onDataChange(DataSnapshot dataSnapshot) {
