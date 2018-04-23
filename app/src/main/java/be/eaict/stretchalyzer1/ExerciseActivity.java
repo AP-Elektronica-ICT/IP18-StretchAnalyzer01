@@ -51,6 +51,8 @@ public class ExerciseActivity extends AppCompatActivity {
 //    private List<List<String>> bluetoothData = new ArrayList<List<String>>();
     private Map<String , List<String>> bluetoothMapData = new HashMap<String  , List<String>>();
 
+    private int repsRemaining = 15;
+
     @Override
     public void onStart() {
         mAuth = FirebaseAuth.getInstance();
@@ -121,6 +123,11 @@ public class ExerciseActivity extends AppCompatActivity {
                 Connect();
             }
         });
+
+        if (repsRemaining == 0){
+            Intent intent = new Intent(ExerciseActivity.this, DoneStretching.class);
+            startActivity(intent);
+        }
 
     }
 
