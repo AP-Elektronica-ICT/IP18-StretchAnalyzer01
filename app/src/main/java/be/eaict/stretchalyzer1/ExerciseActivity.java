@@ -13,27 +13,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewDebug;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import org.w3c.dom.Text;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -53,6 +46,7 @@ public class ExerciseActivity extends AppCompatActivity {
     private String userID;
     private Handler mHandler;
     private TextView txt_repsRemaining;
+    private String exerciseDate;
     private static int REQUEST_ENABLE_BT = 1;
     static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private String address;
@@ -146,14 +140,16 @@ public class ExerciseActivity extends AppCompatActivity {
         long epochDate = System.currentTimeMillis();
         Date date = new Date(epochDate);
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MMMM-yyyy HH:mm");
-        myRef = database.getReference(userID).child(formatter.format(date));
+        exerciseDate = formatter.format(date);
+        myRef = database.getReference(userID).child(exerciseDate);
         myRef.setValue(bluetoothMapData);
     }
 
 //    protected void ReadDatabase(){
 //        long epochDate = System.currentTimeMillis();
 //        Date date = new Date(epochDate);
-//        myRef = database.getReference(userID).child(date.toString());
+//        SimpleDateFormat formatter = new SimpleDateFormat("dd-MMMM-yyyy HH:mm");
+//        myRef = database.getReference(userID).child(formatter.format(date));
 //        myRef.addValueEventListener(new ValueEventListener() {
 //            @Override
 //            public void onDataChange(DataSnapshot dataSnapshot) {

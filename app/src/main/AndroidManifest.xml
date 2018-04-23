@@ -29,7 +29,7 @@
             android:screenOrientation="portrait" />
         <activity android:name=".CreateAccountActivity" />
         <activity android:name=".MainActivity" />
-        <activity android:name=".DoneStretching"></activity>
+        <activity android:name=".DoneStretchingActivity"></activity>
     </application>
 
 </manifest>
