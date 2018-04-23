@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,6 +28,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -57,7 +59,8 @@ public class ExerciseActivity extends AppCompatActivity {
     private int repsRemaining = 5;
     List<String> timeStamps = new ArrayList<String>();
     List<String> values = new ArrayList<String>();
-
+    final int handlerState = 0;
+    private StringBuilder dataString = new StringBuilder();
 
 
     @Override
@@ -91,6 +94,34 @@ public class ExerciseActivity extends AppCompatActivity {
 
 //        bluetoothData.add(timeStamps);
 //        bluetoothData.add(values);
+
+        mHandler = new Handler() {
+            public void handleMessage(android.os.Message msg) {
+                if (msg.what == handlerState) {
+                    String readMessage = (String) msg.obj;
+                    String timeStamp, value;
+                    dataString.append(readMessage);
+                    int endOfLineIndex = dataString.indexOf("~");
+                    if (endOfLineIndex > 0) {
+                        String dataInPrint = dataString.substring(0, endOfLineIndex);
+                        timeStamp = dataString.toString();
+                        timeStamp = timeStamp.substring(timeStamp.lastIndexOf("@") + 1);
+                        timeStamp = timeStamp.substring(0, timeStamp.lastIndexOf("#"));
+                        value = dataString.toString();
+                        value = value.substring(value.lastIndexOf("#") + 1);
+                        value = value.substring(0, value.lastIndexOf("&"));
+                        dataString.delete(0, dataString.length());
+                        dataInPrint = " ";
+                        Log.d("receive", timeStamp);
+                        Log.d("receive", value);
+                        /*timeStamps.add(timeStamp);
+                        values.add(value);
+                        repsRemaining --;
+                        txt_repsRemaining.setText(String.valueOf(repsRemaining));*/
+                    }
+                }
+            }
+        };
 
         final MediaPlayer instructionSound = MediaPlayer.create(this, R.raw.stretch);
         final ImageView instructionPlay = (ImageView) this.findViewById(R.id.playSound);
@@ -128,10 +159,6 @@ public class ExerciseActivity extends AppCompatActivity {
                 Connect();
             }
         });
-
-        if (repsRemaining == 0){
-
-        }
 
     }
 
@@ -200,28 +227,11 @@ public class ExerciseActivity extends AppCompatActivity {
             toast.show();
         }
     }
-    /*mHandler = new Handler(){
-        public void handleMessage(android.os.Message msg){
-            if(msg.what == MESSAGE_READ){
-                String readMessage = null;
-                try {
-                    readMessage = new String((byte[]) msg.obj, "UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-                mReadBuffer.setText(readMessage);
-            }
 
-            if(msg.what == CONNECTING_STATUS){
-                if(msg.arg1 == 1)
-                    mBluetoothStatus.setText("Connected to Device: " + (String)(msg.obj));
-                else
-                    mBluetoothStatus.setText("Connection Failed");
-            }
-        }
-    };*/
     public void GetData(){
-        while (repsRemaining > 0){
+        byte[] buffer = new byte[256];
+        int bytes;
+        while (repsRemaining > 0) {
             /*try
             {
                 int bytesAvailable = btSocket.getInputStream().available();
@@ -247,32 +257,26 @@ public class ExerciseActivity extends AppCompatActivity {
             {
                 Log.d("Error", "not received");
             }*/
-
-            byte[] buffer = new byte[256];
-            int bytes;
-
-            while (true){
-                try{
+            try {
+                bytes = btSocket.getInputStream().available();
+                if (bytes != 0) {
+                    SystemClock.sleep(100);
                     bytes = btSocket.getInputStream().available();
-                    if(bytes != 0){
-                        SystemClock.sleep(100);
-                        bytes = btSocket.getInputStream().available();
-                        bytes = btSocket.getInputStream().read(buffer, 0, bytes);
+                    bytes = btSocket.getInputStream().read(buffer);
 
-                        String readMessage = new String((byte[]) bytes, "UTF-8");
-                    }
-                } catch (IOException e){
-
+                    String readMessage = new String(buffer, 0, bytes);
+                    mHandler.obtainMessage(handlerState, bytes, -1, readMessage).sendToTarget();
                 }
+            } catch (IOException e) {
+
             }
         }
-
         bluetoothMapData.put("TimeStamps", timeStamps);
         bluetoothMapData.put("Values", values);
         WriteToDatabase();
 
         try {
-            Intent intent = new Intent(ExerciseActivity.this, DoneStretching.class);
+            Intent intent = new Intent(ExerciseActivity.this, DoneStretchingActivity.class);
             startActivity(intent);
         }
         catch (Exception e)
@@ -281,3 +285,4 @@ public class ExerciseActivity extends AppCompatActivity {
         }
     }
 }
+
