@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewDebug;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,6 +23,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import org.w3c.dom.Text;
+
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -52,6 +56,8 @@ public class ExerciseActivity extends AppCompatActivity {
     private Map<String , List<String>> bluetoothMapData = new HashMap<String  , List<String>>();
 
     private int repsRemaining = 15;
+
+
 
     @Override
     public void onStart() {
@@ -130,6 +136,7 @@ public class ExerciseActivity extends AppCompatActivity {
         }
 
     }
+
 
     protected  void WriteToDatabase(){
         long epochDate = System.currentTimeMillis();
