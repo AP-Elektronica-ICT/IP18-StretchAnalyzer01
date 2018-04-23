@@ -41,7 +41,8 @@ public class ExerciseActivity extends AppCompatActivity {
     private Button stopExercise;
     private Button btnConnect;
     private ImageView profileSettings;
-    private int reps = 15;
+    private int reps = 5;
+    private boolean receiving = true;
     private String userID;
     private static int REQUEST_ENABLE_BT = 1;
     static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
@@ -193,11 +194,16 @@ public class ExerciseActivity extends AppCompatActivity {
             try
             {
                 int bytesAvailable = btSocket.getInputStream().available();
-                byte []packetBytes = new byte[bytesAvailable];
-                if(bytesAvailable > 0){
+                byte[] packetBytes = new byte[bytesAvailable];
+                if (bytesAvailable > 0) {
                     btSocket.getInputStream().read(packetBytes);
-                    String test = new String(packetBytes);
-                    Log.d("receive", test);
+                    String data = new String(packetBytes);
+                    if(data.length() > 6) {
+                        Log.d("receive", data);
+                        String[] splited = data.split("\\s+");
+                        Log.d("receive", "data1 " + splited[0]);
+                        Log.d("receive", "data2 " + splited[1]);
+                    }
                 }
             }
             catch (Exception e)
