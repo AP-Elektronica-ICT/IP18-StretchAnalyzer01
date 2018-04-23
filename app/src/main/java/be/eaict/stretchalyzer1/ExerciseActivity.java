@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.os.CountDownTimer;
 import android.support.annotation.RequiresPermission;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -40,6 +41,7 @@ public class ExerciseActivity extends AppCompatActivity {
     private Button stopExercise;
     private Button btnConnect;
     private ImageView profileSettings;
+    private int reps = 15;
     private String userID;
     private static int REQUEST_ENABLE_BT = 1;
     static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
@@ -166,12 +168,42 @@ public class ExerciseActivity extends AppCompatActivity {
             BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
             btSocket.connect();//start connection
             Toast toast = Toast.makeText(getApplicationContext(), "Connected", Toast.LENGTH_SHORT );
+            Log.d("receive","receive");
             toast.show();
             btnConnect.setVisibility(View.INVISIBLE);
+            btnConnect.setClickable(false);
+            new CountDownTimer(2000, 100){
+                public void onFinish(){
+                    GetData();
+                }
+                public void onTick(long millisUntilFinished){
+
+                }
+            }.start();
+
         } catch (IOException e) {
             //Log.d("Connection", e.toString());
             Toast toast = Toast.makeText(getApplicationContext(), "Connection failed", Toast.LENGTH_SHORT);
             toast.show();
+        }
+    }
+
+    public void GetData(){
+        while (reps > 0){
+            try
+            {
+                int bytesAvailable = btSocket.getInputStream().available();
+                byte []packetBytes = new byte[bytesAvailable];
+                if(bytesAvailable > 0){
+                    btSocket.getInputStream().read(packetBytes);
+                    String test = new String(packetBytes);
+                    Log.d("receive", test);
+                }
+            }
+            catch (Exception e)
+            {
+                Log.d("Error", "not received");
+            }
         }
     }
 }
