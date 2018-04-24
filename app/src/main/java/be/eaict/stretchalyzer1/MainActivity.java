@@ -182,6 +182,16 @@ public class MainActivity extends AppCompatActivity {
                 countDownTimer.cancel();
             }
         });
+
+        Button bttnHist = (Button) this.findViewById(R.id.buttonHistory);
+        bttnHist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentHistory = new Intent(MainActivity.this, HistoryActivity.class);
+                startActivity(intentHistory);
+
+            }
+        });
         
         profileSettings = findViewById(R.id.imgUserSettings);
         timer = findViewById(R.id.TimeLeft);
