@@ -53,8 +53,8 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Double> aX = new ArrayList<>();
     private ArrayList<Double> aY = new ArrayList<>();
     private ArrayList<Double> aZ = new ArrayList<>();
-    private List<Double> sec = new ArrayList<>();
-    private List<Double> angle = new ArrayList<>();
+    private List<String> sec = new ArrayList<>();
+    private List<String> angle = new ArrayList<>();
     private FirebaseDatabase database;
     private DatabaseReference myRef;
     public static final int NOTIFICATION_ID = 1;
@@ -67,17 +67,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         database = FirebaseDatabase.getInstance();
         myRef=database.getReference("kv88idO4A1Sjw7ejKz0b48A9z3F2").child("23-april-2018 14:23");
-//        myRef.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                //angle = (List<String>) dataSnapshot.child("Values").getValue();
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                angle = (List<String>)(dataSnapshot.child("Values").getValue());
+                sec = (List<String>) dataSnapshot.child("TimeStamps").getValue();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         final CountDownTimer countDownTimer = new CountDownTimer(12000, 1000){
 
@@ -114,30 +115,30 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        try{
-            InputStream streamX = getAssets().open("Ax.txt");
-            InputStream streamY = getAssets().open("Ay.txt");
-            InputStream streamZ = getAssets().open("Az.txt");
-            InputStream streamSec = getAssets().open("sec.txt");
+//        try{
+//            InputStream streamX = getAssets().open("Ax.txt");
+//            InputStream streamY = getAssets().open("Ay.txt");
+//            InputStream streamZ = getAssets().open("Az.txt");
+//            InputStream streamSec = getAssets().open("sec.txt");
 
-            BufferedReader readerX = new BufferedReader(new InputStreamReader(streamX));
-            BufferedReader readerY = new BufferedReader(new InputStreamReader(streamY));
-            BufferedReader readerZ = new BufferedReader(new InputStreamReader(streamZ));
-            BufferedReader readerSec = new BufferedReader(new InputStreamReader(streamSec));
-
-            while((line = readerX.readLine()) != null)
-                x.add(line);
-            while((line = readerY.readLine()) != null)
-                y.add(line);
-            while((line = readerZ.readLine()) != null)
-                z.add(line);
-            while((line = readerSec.readLine()) != null)
-                mSec.add(line);
-            CalculateData();
-        }
-        catch (IOException e){
-            e.printStackTrace();
-        }
+//            BufferedReader readerX = new BufferedReader(new InputStreamReader(streamX));
+//            BufferedReader readerY = new BufferedReader(new InputStreamReader(streamY));
+//            BufferedReader readerZ = new BufferedReader(new InputStreamReader(streamZ));
+//            BufferedReader readerSec = new BufferedReader(new InputStreamReader(streamSec));
+//
+//            while((line = readerX.readLine()) != null)
+//                x.add(line);
+//            while((line = readerY.readLine()) != null)
+//                y.add(line);
+//            while((line = readerZ.readLine()) != null)
+//                z.add(line);
+//            while((line = readerSec.readLine()) != null)
+//                mSec.add(line);
+//            //CalculateData();
+//        }
+//        catch (IOException e){
+//            e.printStackTrace();
+//        }
 
 
         lineChart = (LineChart) findViewById(R.id.lineChart);
@@ -175,34 +176,34 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void CalculateData(){
-
-        for (String data: x) {
-            Double tempX = Math.round((0.1475*(Double.parseDouble(data)) - 48.729) * 10000d) / 10000d;
-            Double minLimit;
-            if(tempX > -9.81)
-                minLimit = tempX;
-            else
-                minLimit = -9.81;
-            aX.add(minLimit);
-
-            tempX = Math.round((Math.asin(minLimit/9.81)/Math.PI * 180) * 1000000d) / 1000000d;
-            angle.add(tempX);
-        }
-        for (String data: y) {
-            Double tempY = Math.round((0.1474*(Double.parseDouble(data)) - 48.462) * 10000d) / 10000d;
-            aY.add(tempY);
-        }
-        for (String data: z) {
-            Double tempZ = Math.round((0.1486*(Double.parseDouble(data)) - 49.591) * 10000d) / 10000d;
-            aZ.add(tempZ);
-        }
-        for (String data: mSec) {
-            Double tempSec = (Double.parseDouble(data))/1000;
-            sec.add(tempSec);
-        }
-
-    }
+//    public void CalculateData(){
+//
+//        for (String data: x) {
+//            Double tempX = Math.round((0.1475*(Double.parseDouble(data)) - 48.729) * 10000d) / 10000d;
+//            Double minLimit;
+//            if(tempX > -9.81)
+//                minLimit = tempX;
+//            else
+//                minLimit = -9.81;
+//            aX.add(minLimit);
+//
+//            tempX = Math.round((Math.asin(minLimit/9.81)/Math.PI * 180) * 1000000d) / 1000000d;
+//            angle.add(tempX);
+//        }
+//        for (String data: y) {
+//            Double tempY = Math.round((0.1474*(Double.parseDouble(data)) - 48.462) * 10000d) / 10000d;
+//            aY.add(tempY);
+//        }
+//        for (String data: z) {
+//            Double tempZ = Math.round((0.1486*(Double.parseDouble(data)) - 49.591) * 10000d) / 10000d;
+//            aZ.add(tempZ);
+//        }
+//        for (String data: mSec) {
+//            Double tempSec = (Double.parseDouble(data))/1000;
+//            sec.add(tempSec);
+//        }
+//
+//    }
 
     public void ShowNot(){
         Intent intent = new Intent(this, ExerciseActivity.class);
