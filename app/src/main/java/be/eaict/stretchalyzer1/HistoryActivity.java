@@ -3,6 +3,7 @@ package be.eaict.stretchalyzer1;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -23,12 +24,16 @@ public class HistoryActivity extends AppCompatActivity {
     BarChart barChart;
     ArrayList<String> dates;
     Random random;
+    ArrayList<String> tempBarEntries;
     ArrayList<BarEntry> barEntries;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
 
+        Intent intent = getIntent();
+        tempBarEntries = intent.getStringArrayListExtra("historyData");
+        Log.d("arraylist",  tempBarEntries.toString());
         barChart = (BarChart) findViewById(R.id.bargraph);
         createRandomBarGraph("2016/05/05", "2016/06/01");
 
@@ -65,29 +70,25 @@ public class HistoryActivity extends AppCompatActivity {
             mDate2.setTime(date2);
 
             dates = new ArrayList<>();
-            dates = getList(mDate1,mDate2);
+            //dates = getList(mDate1,mDate2);
 
             barEntries = new ArrayList<>();
-            float max = 0f;
-            float value = 0f;
-            random = new Random();
-            int x = 0;
 
-            barEntries.add(new BarEntry(-50,1));
+
+            /*barEntries.add(new BarEntry(-50,1));
             barEntries.add(new BarEntry(-170,2));
             barEntries.add(new BarEntry(175,3));
             barEntries.add(new BarEntry(-78,4));
             barEntries.add(new BarEntry(169,5));
             barEntries.add(new BarEntry(139,6));
             barEntries.add(new BarEntry(-84,7));
-            /*
-            for(int j = 0; j< dates.size();j++){
-                max = 100f;
-                value = random.nextFloat()*max;
-                barEntries.add(new BarEntry(value,j));
-
-
-            }*/
+            */
+            for(int j = 0; j< tempBarEntries.size();j++){
+                double tempDoubles = Double.parseDouble(tempBarEntries.get(j));
+                int tempAngle = (int) tempDoubles;
+                barEntries.add(new BarEntry(tempAngle,j));
+                dates.add(String.valueOf(j));
+            }
         }catch(ParseException e){
             e.printStackTrace();
         }

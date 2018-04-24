@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Double> aZ = new ArrayList<>();
     private List<String> sec = new ArrayList<String>();
     private List<String> angle = new ArrayList<String>();
-    private List<List<String>> allAngles = new ArrayList<List<String>>();
+    private List<String> allAngles = new ArrayList<String>();
     private int day;
     private int month;
     private String monthString;
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         currentUser = mAuth.getCurrentUser();
         database = FirebaseDatabase.getInstance();
         final Intent intent = getIntent();
-        if(intent.getStringExtra("flag") != null && intent.getStringExtra("flag") == "A"){
+        if(intent.getStringExtra("flag") != null){
             day = intent.getIntExtra("dayOfMonth", 0);
             month = (intent.getIntExtra("monthOfYear", 0));
             switch (month){
@@ -135,10 +135,10 @@ public class MainActivity extends AppCompatActivity {
                             for (DataSnapshot d: dataSnapshot.getChildren()){
                                 String key = d.getKey();
                                 if(key.contains(query)){
-                                    allAngles.add((List<String>)d.child("Values").getValue());
+                                    List<String> tempList = (List<String>)d.child("Values").getValue();
+                                    allAngles.addAll(tempList);
+                                    Log.d("firstarraylist", allAngles.toString());
                                 }
-                                if(allAngles.size() > 0)
-                                Log.d("valueueu", allAngles.get(0).get(0));
                             }
                         }
                 }
@@ -213,6 +213,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intentHistory = new Intent(MainActivity.this, HistoryActivity.class);
+                intentHistory.putStringArrayListExtra("historyData", (ArrayList<String>) allAngles);
+                Log.d("arraylist", allAngles.toString());
                 startActivity(intentHistory);
                 countDownTimer.cancel();
             }

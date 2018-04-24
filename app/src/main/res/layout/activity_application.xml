@@ -97,10 +97,10 @@
         android:id="@+id/datePicker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:datePickerMode="calendar"
+        android:layout_gravity="center"
         android:scaleX="0.9"
-        android:scaleY="0.9"
-        android:datePickerMode="spinner">
-    </DatePicker>
+        android:scaleY="0.9"/>
 
     <Button
         android:layout_width="wrap_content"
