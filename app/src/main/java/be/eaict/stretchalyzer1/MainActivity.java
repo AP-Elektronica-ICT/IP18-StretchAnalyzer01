@@ -28,12 +28,18 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -47,8 +53,10 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Double> aX = new ArrayList<>();
     private ArrayList<Double> aY = new ArrayList<>();
     private ArrayList<Double> aZ = new ArrayList<>();
-    private ArrayList<Double> sec = new ArrayList<>();
-    private ArrayList<Double> angle = new ArrayList<>();
+    private List<Double> sec = new ArrayList<>();
+    private List<Double> angle = new ArrayList<>();
+    private FirebaseDatabase database;
+    private DatabaseReference myRef;
     public static final int NOTIFICATION_ID = 1;
     TextView timer;
     ImageView profileSettings;
@@ -57,6 +65,19 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        database = FirebaseDatabase.getInstance();
+        myRef=database.getReference("kv88idO4A1Sjw7ejKz0b48A9z3F2").child("23-april-2018 14:23");
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                //angle = (List<String>) dataSnapshot.child("Values").getValue();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         Button startNow = (Button) this.findViewById(R.id.ButtonStart);
         startNow.setOnClickListener(new View.OnClickListener() {
@@ -149,6 +170,7 @@ public class MainActivity extends AppCompatActivity {
 
         lineChart.setVisibleXRangeMaximum(2000);
     }
+
 
     public void CalculateData(){
 
