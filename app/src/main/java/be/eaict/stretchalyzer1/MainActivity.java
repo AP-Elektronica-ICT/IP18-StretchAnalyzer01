@@ -142,20 +142,12 @@ public class MainActivity extends AppCompatActivity {
 
 
         lineChart = (LineChart) findViewById(R.id.lineChart);
-
-        //ArrayList<String> xAXES = new ArrayList<>();
-        //ArrayList<Entry> yAXESsin = new ArrayList<>();
         ArrayList<Entry> yAXES = new ArrayList<>();
         double x = 0 ;
         int numDataPoints = 1000;
 
         for(int i=0;i<angle.size();i++){
-            //float sinFunction = Float.parseFloat(String.valueOf(Math.sin(x)));
-            //float cosFunction = Float.parseFloat(String.valueOf(Math.cos(x)));
-            //x = x + 0.1;
-            //yAXESsin.add(new Entry(sinFunction,i));
             yAXES.add(new Entry(Float.parseFloat(String.valueOf(angle.get(i))),i));
-            //xAXES.add(i, String.valueOf(x));
         }
         String[] xaxes = new String[sec.size()];
         for(int i=0; i<sec.size();i++){
