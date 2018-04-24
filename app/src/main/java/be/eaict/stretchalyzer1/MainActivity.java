@@ -34,6 +34,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.BufferedReader;
@@ -55,16 +56,18 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Double> aX = new ArrayList<>();
     private ArrayList<Double> aY = new ArrayList<>();
     private ArrayList<Double> aZ = new ArrayList<>();
-    private List<String> sec = new ArrayList<>();
-    private List<String> angle = new ArrayList<>();
+    private List<String> sec = new ArrayList<String>();
+    private List<String> angle = new ArrayList<String>();
     private List<List<String>> allAngles = new ArrayList<List<String>>();
     private int day;
     private int month;
     private String monthString;
     private int year;
+    private String prevExerciseDate;
     private String query;
     private FirebaseDatabase database;
     private DatabaseReference myRef;
+    private DatabaseReference queryRef;
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
     public static final int NOTIFICATION_ID = 1;
@@ -79,8 +82,8 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
         database = FirebaseDatabase.getInstance();
-        Intent intent = getIntent();
-        if(intent.getStringExtra("flag") != null){
+        final Intent intent = getIntent();
+        if(intent.getStringExtra("flag") != null && intent.getStringExtra("flag") == "A"){
             day = intent.getIntExtra("dayOfMonth", 0);
             month = (intent.getIntExtra("monthOfYear", 0));
             switch (month){
@@ -146,6 +149,27 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+
+//        if (intent.getStringExtra("flag") != null && intent.getStringExtra("flag") == "B"){
+//            prevExerciseDate = intent.getStringExtra("exerDatum");
+//        }
+
+        queryRef = database.getReference();
+        Query lastQuery = queryRef.child(currentUser.getUid()).orderByKey().limitToLast(1);
+        lastQuery.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot d: dataSnapshot.getChildren()){
+                sec = (List<String>) d.child("TimeStamps").getValue();
+                angle = (List<String>) d.child("Values").getValue();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 //        myRef=database.getReference("kv88idO4A1Sjw7ejKz0b48A9z3F2").child("23-april-2018 14:23");
 //        myRef.addValueEventListener(new ValueEventListener() {
 //            @Override
