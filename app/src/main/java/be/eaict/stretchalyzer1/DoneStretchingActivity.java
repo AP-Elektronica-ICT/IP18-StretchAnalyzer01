@@ -23,8 +23,12 @@ import java.util.List;
 import java.util.Map;
 
 public class DoneStretchingActivity extends AppCompatActivity {
+
     List<String> graphValues;
     List<String> graphTimeStamps;
+
+    LineChart lineChart;
+
     private Map<String , List<String>> bluetoothData = new HashMap<String  , List<String>>();
     LineChart lineChart;
     private List<Double> sec = new ArrayList<>();
