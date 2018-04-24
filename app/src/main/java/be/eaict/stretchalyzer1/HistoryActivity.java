@@ -24,7 +24,7 @@ public class HistoryActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_history);
 
         barChart = (BarChart) findViewById(R.id.bargraph);
         createRandomBarGraph("2016/05/05", "2016/06/01");
@@ -76,7 +76,7 @@ public class HistoryActivity extends AppCompatActivity {
 
         BarDataSet barDataSet = new BarDataSet(barEntries,"Values");
         BarData barData = new BarData(dates,barDataSet);
-       // barChart.setData(barData);
+        barChart.setData(barData);
 
     }
 

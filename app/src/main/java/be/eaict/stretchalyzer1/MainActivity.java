@@ -189,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intentHistory = new Intent(MainActivity.this, HistoryActivity.class);
                 startActivity(intentHistory);
-
+                countDownTimer.cancel();
             }
         });
         
