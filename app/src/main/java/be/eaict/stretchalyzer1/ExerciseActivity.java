@@ -49,6 +49,7 @@ public class ExerciseActivity extends AppCompatActivity {
     private Handler mHandler;
     private TextView txt_repsRemaining;
     private String exerciseDate;
+    private String timeStamp, value;
     private static int REQUEST_ENABLE_BT = 1;
     static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private String address;
@@ -95,13 +96,16 @@ public class ExerciseActivity extends AppCompatActivity {
 //        bluetoothData.add(timeStamps);
 //        bluetoothData.add(values);
 
-        mHandler = new Handler() {
+        /*mHandler = new Handler() {
             public void handleMessage(android.os.Message msg) {
+                Log.d("receive", "test1");
                 if (msg.what == handlerState) {
                     String readMessage = (String) msg.obj;
                     String timeStamp, value;
                     dataString.append(readMessage);
                     int endOfLineIndex = dataString.indexOf("~");
+                    Log.d("receive", "test");
+                    Log.d("receive", String.valueOf(endOfLineIndex));
                     if (endOfLineIndex > 0) {
                         String dataInPrint = dataString.substring(0, endOfLineIndex);
                         timeStamp = dataString.toString();
@@ -109,19 +113,20 @@ public class ExerciseActivity extends AppCompatActivity {
                         timeStamp = timeStamp.substring(0, timeStamp.lastIndexOf("#"));
                         value = dataString.toString();
                         value = value.substring(value.lastIndexOf("#") + 1);
-                        value = value.substring(0, value.lastIndexOf("&"));
+                        value = value.substring(0, value.lastIndexOf("~"));
                         dataString.delete(0, dataString.length());
                         dataInPrint = " ";
-                        Log.d("receive", timeStamp);
-                        Log.d("receive", value);
+                        Log.d("test", timeStamp);
+                        Log.d("test", value);
+                        Log.d("test", dataInPrint);
                         /*timeStamps.add(timeStamp);
                         values.add(value);
                         repsRemaining --;
-                        txt_repsRemaining.setText(String.valueOf(repsRemaining));*/
+                        txt_repsRemaining.setText(String.valueOf(repsRemaining));
                     }
                 }
             }
-        };
+        };*/
 
         final MediaPlayer instructionSound = MediaPlayer.create(this, R.raw.stretch);
         final ImageView instructionPlay = (ImageView) this.findViewById(R.id.playSound);
@@ -265,7 +270,19 @@ public class ExerciseActivity extends AppCompatActivity {
                     bytes = btSocket.getInputStream().read(buffer);
 
                     String readMessage = new String(buffer, 0, bytes);
-                    mHandler.obtainMessage(handlerState, bytes, -1, readMessage).sendToTarget();
+                    timeStamp = readMessage;
+                    timeStamp = timeStamp.substring(timeStamp.lastIndexOf("#") + 1);
+                    timeStamp = timeStamp.substring(0, timeStamp.lastIndexOf("@"));
+                    value = readMessage;
+                    value = value.substring(value.lastIndexOf("@") + 1);
+                    value = value.substring(0, value.lastIndexOf("~"));
+                    dataString.delete(0, dataString.length());
+                    Log.d("receive", timeStamp);
+                    Log.d("receive", value);
+                    timeStamps.add(timeStamp);
+                    values.add(value);
+                    repsRemaining --;
+                    txt_repsRemaining.setText(String.valueOf(repsRemaining));
                 }
             } catch (IOException e) {
 
