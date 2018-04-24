@@ -82,7 +82,8 @@ public class ExerciseActivity extends AppCompatActivity {
         profileSettings = findViewById(R.id.imgSettings);
         stopExercise = (Button) findViewById(R.id.bttnStop);
         btnConnect = (Button) findViewById(R.id.btn_connect);
-        txt_repsRemaining = (TextView) findViewById(R.id.txtRemaining);
+        txt_repsRemaining = (TextView) findViewById(R.id.txt_Remaining);
+        txt_repsRemaining.setText(String.valueOf(repsRemaining));
 
 //        for (int i = 0; i < 10; i++) {
 //            timeStamps.add(String.valueOf(i));
@@ -237,6 +238,8 @@ public class ExerciseActivity extends AppCompatActivity {
         byte[] buffer = new byte[256];
         int bytes;
         while (repsRemaining > 0) {
+
+            txt_repsRemaining.setText(String.valueOf(repsRemaining));
             /*try
             {
                 int bytesAvailable = btSocket.getInputStream().available();
@@ -282,7 +285,6 @@ public class ExerciseActivity extends AppCompatActivity {
                     timeStamps.add(timeStamp);
                     values.add(value);
                     repsRemaining --;
-                    txt_repsRemaining.setText(String.valueOf(repsRemaining));
                 }
             } catch (IOException e) {
 
