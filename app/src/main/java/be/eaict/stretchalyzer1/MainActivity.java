@@ -58,12 +58,25 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        final CountDownTimer countDownTimer = new CountDownTimer(12000, 1000){
+
+            public void onTick(long millisUntilFinished){
+                timer.setText(String.valueOf((millisUntilFinished/1000)));
+            }
+
+            public void onFinish(){
+                ShowNot();
+
+            }
+        }.start();
+
         Button startNow = (Button) this.findViewById(R.id.ButtonStart);
         startNow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, ExerciseActivity.class);
                 startActivity(intent);
+                countDownTimer.cancel();
             }
         });
         
@@ -78,17 +91,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        CountDownTimer countDownTimer = new CountDownTimer(12000, 1000){
 
-            public void onTick(long millisUntilFinished){
-                timer.setText(String.valueOf((millisUntilFinished/1000)));
-            }
-
-            public void onFinish(){
-                ShowNot();
-
-            }
-        }.start();
 
         try{
             InputStream streamX = getAssets().open("Ax.txt");
