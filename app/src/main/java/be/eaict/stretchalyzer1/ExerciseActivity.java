@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class ExerciseActivity extends AppCompatActivity {
     private FirebaseDatabase database;
@@ -60,9 +61,8 @@ public class ExerciseActivity extends AppCompatActivity {
     private int repsRemaining = 5;
     List<String> timeStamps = new ArrayList<String>();
     List<String> values = new ArrayList<String>();
-    final int handlerState = 0;
     private StringBuilder dataString = new StringBuilder();
-
+    Thread t1;
 
     @Override
     public void onStart() {
@@ -97,38 +97,6 @@ public class ExerciseActivity extends AppCompatActivity {
 //        bluetoothData.add(timeStamps);
 //        bluetoothData.add(values);
 
-        /*mHandler = new Handler() {
-            public void handleMessage(android.os.Message msg) {
-                Log.d("receive", "test1");
-                if (msg.what == handlerState) {
-                    String readMessage = (String) msg.obj;
-                    String timeStamp, value;
-                    dataString.append(readMessage);
-                    int endOfLineIndex = dataString.indexOf("~");
-                    Log.d("receive", "test");
-                    Log.d("receive", String.valueOf(endOfLineIndex));
-                    if (endOfLineIndex > 0) {
-                        String dataInPrint = dataString.substring(0, endOfLineIndex);
-                        timeStamp = dataString.toString();
-                        timeStamp = timeStamp.substring(timeStamp.lastIndexOf("@") + 1);
-                        timeStamp = timeStamp.substring(0, timeStamp.lastIndexOf("#"));
-                        value = dataString.toString();
-                        value = value.substring(value.lastIndexOf("#") + 1);
-                        value = value.substring(0, value.lastIndexOf("~"));
-                        dataString.delete(0, dataString.length());
-                        dataInPrint = " ";
-                        Log.d("test", timeStamp);
-                        Log.d("test", value);
-                        Log.d("test", dataInPrint);
-                        /*timeStamps.add(timeStamp);
-                        values.add(value);
-                        repsRemaining --;
-                        txt_repsRemaining.setText(String.valueOf(repsRemaining));
-                    }
-                }
-            }
-        };*/
-
         final MediaPlayer instructionSound = MediaPlayer.create(this, R.raw.stretch);
         final ImageView instructionPlay = (ImageView) this.findViewById(R.id.playSound);
         instructionPlay.setOnClickListener(new View.OnClickListener() {
@@ -161,10 +129,68 @@ public class ExerciseActivity extends AppCompatActivity {
                     Intent enableBT = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                     startActivityForResult(enableBT, REQUEST_ENABLE_BT);
                 }
-
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        btnConnect.setVisibility(View.INVISIBLE);
+                        btnConnect.setClickable(false);
+                    }
+                });
                 Connect();
             }
         });
+
+        t1 = new Thread(){
+            public void run(){
+                byte[] buffer = new byte[256];
+                int bytes;
+                while (repsRemaining > 0) {
+                    try {
+                        bytes = btSocket.getInputStream().available();
+                        if (bytes != 0) {
+                            SystemClock.sleep(100);
+                            bytes = btSocket.getInputStream().available();
+                            bytes = btSocket.getInputStream().read(buffer);
+
+                            String readMessage = new String(buffer, 0, bytes);
+                            timeStamp = readMessage;
+                            timeStamp = timeStamp.substring(timeStamp.lastIndexOf("#") + 1);
+                            timeStamp = timeStamp.substring(0, timeStamp.lastIndexOf("@"));
+                            value = readMessage;
+                            value = value.substring(value.lastIndexOf("@") + 1);
+                            value = value.substring(0, value.lastIndexOf("~"));
+                            dataString.delete(0, dataString.length());
+                            Log.d("receive", timeStamp);
+                            Log.d("receive", value);
+                            timeStamps.add(timeStamp);
+                            values.add(value);
+                            repsRemaining --;
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    txt_repsRemaining.setText(String.valueOf(repsRemaining));
+                                }
+                            });
+                        }
+                    } catch (IOException e) {
+
+                    }
+                }
+                bluetoothMapData.put("TimeStamps", timeStamps);
+                bluetoothMapData.put("Values", values);
+                WriteToDatabase();
+
+                try {
+                    Intent intent = new Intent(ExerciseActivity.this, DoneStretchingActivity.class);
+                    intent.putExtra("data", (HashMap<String, List<String>>) bluetoothMapData);
+                    startActivity(intent);
+                }
+                catch (Exception e)
+                {
+                    Log.d("Error", e.getMessage());
+                }
+            }
+        };
 
     }
 
@@ -216,11 +242,10 @@ public class ExerciseActivity extends AppCompatActivity {
             Toast toast = Toast.makeText(getApplicationContext(), "Connected", Toast.LENGTH_SHORT );
             Log.d("receive","receive");
             toast.show();
-            btnConnect.setVisibility(View.INVISIBLE);
-            btnConnect.setClickable(false);
             new CountDownTimer(2000, 100){
                 public void onFinish(){
-                    GetData();
+                    //GetData();
+                    t1.start();
                 }
                 public void onTick(long millisUntilFinished){
 
@@ -231,40 +256,15 @@ public class ExerciseActivity extends AppCompatActivity {
             //Log.d("Connection", e.toString());
             Toast toast = Toast.makeText(getApplicationContext(), "Connection failed", Toast.LENGTH_SHORT);
             toast.show();
+            btnConnect.setVisibility(View.VISIBLE);
+            btnConnect.setClickable(true);
         }
     }
 
-    public void GetData(){
+    /*public void GetData(){
         byte[] buffer = new byte[256];
         int bytes;
         while (repsRemaining > 0) {
-
-            txt_repsRemaining.setText(String.valueOf(repsRemaining));
-            /*try
-            {
-                int bytesAvailable = btSocket.getInputStream().available();
-                byte[] packetBytes = new byte[256];
-                if (bytesAvailable > 0) {
-                    String readMessage = (String) btSocket.getInputStream().read(packetBytes);
-                    message.append(readMessage);
-                    String data = new String(packetBytes);
-                    if(data.length() > 6) {
-                        Log.d("receive", data);
-                        String[] splited = data.split("\\s+");
-                        Log.d("receive", "data1 " + splited[0]);
-                        Log.d("receive", "data2 " + splited[1]);
-                        timeStamps.add(splited[0]);
-                        values.add(splited[1]);
-                        repsRemaining --;
-                        txt_repsRemaining.setText(String.valueOf(repsRemaining));
-                    }
-                }
-
-            }
-            catch (Exception e)
-            {
-                Log.d("Error", "not received");
-            }*/
             try {
                 bytes = btSocket.getInputStream().available();
                 if (bytes != 0) {
@@ -285,6 +285,7 @@ public class ExerciseActivity extends AppCompatActivity {
                     timeStamps.add(timeStamp);
                     values.add(value);
                     repsRemaining --;
+                    txt_repsRemaining.setText(String.valueOf(repsRemaining));
                 }
             } catch (IOException e) {
 
@@ -303,6 +304,6 @@ public class ExerciseActivity extends AppCompatActivity {
         {
             Log.d("Error", e.getMessage());
         }
-    }
+    }*/
 }
 
