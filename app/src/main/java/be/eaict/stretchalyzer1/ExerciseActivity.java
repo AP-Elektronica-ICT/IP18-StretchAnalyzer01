@@ -294,6 +294,7 @@ public class ExerciseActivity extends AppCompatActivity {
 
         try {
             Intent intent = new Intent(ExerciseActivity.this, DoneStretchingActivity.class);
+            intent.putExtra("data", (HashMap<String, List<String>>) bluetoothMapData);
             startActivity(intent);
         }
         catch (Exception e)

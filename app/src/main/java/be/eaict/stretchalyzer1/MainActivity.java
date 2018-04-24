@@ -67,17 +67,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         database = FirebaseDatabase.getInstance();
         myRef=database.getReference("kv88idO4A1Sjw7ejKz0b48A9z3F2").child("23-april-2018 14:23");
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                //angle = (List<String>) dataSnapshot.child("Values").getValue();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+//        myRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                //angle = (List<String>) dataSnapshot.child("Values").getValue();
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
 
         Button startNow = (Button) this.findViewById(R.id.ButtonStart);
         startNow.setOnClickListener(new View.OnClickListener() {
