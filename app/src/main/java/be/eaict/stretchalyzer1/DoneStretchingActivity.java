@@ -88,10 +88,10 @@ public class DoneStretchingActivity extends AppCompatActivity {
         String totalTimeText = min + "m" + sec;
         txtTime.setText(totalTimeText);
         txtReps.setText(String.valueOf(angle.size()));
-        CreateGraph();
+        CreateGraph(lineChart);
     }
 
-    public void CreateGraph(){
+    public void CreateGraph(LineChart lineChart){
         lineChart = (LineChart) findViewById(R.id.lineChart);
         ArrayList<Entry> yAXES = new ArrayList<>();
         double x = 0 ;
