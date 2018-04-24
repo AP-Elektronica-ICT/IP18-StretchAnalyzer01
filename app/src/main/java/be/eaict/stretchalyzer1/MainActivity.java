@@ -162,6 +162,7 @@ public class MainActivity extends AppCompatActivity {
                 for (DataSnapshot d: dataSnapshot.getChildren()){
                 sec = (List<String>) d.child("TimeStamps").getValue();
                 angle = (List<String>) d.child("Values").getValue();
+                CreateGraph(lineChart);
                 }
             }
 
@@ -265,7 +266,7 @@ public class MainActivity extends AppCompatActivity {
 //        }
 
 
-        lineChart = (LineChart) findViewById(R.id.lineChart);
+       /* lineChart = (LineChart) findViewById(R.id.lineChart);
         ArrayList<Entry> yAXES = new ArrayList<>();
         double x = 0 ;
         int numDataPoints = 1000;
@@ -288,7 +289,7 @@ public class MainActivity extends AppCompatActivity {
 
         lineChart.setData(new LineData(xaxes,lineDataSets));
 
-        lineChart.setVisibleXRangeMaximum(2000);
+        lineChart.setVisibleXRangeMaximum(2000);*/
     }
 
 
@@ -346,5 +347,32 @@ public class MainActivity extends AppCompatActivity {
         Notification not = notBuilder.build();
         notMgr.notify(NOTIFICATION_ID, not);
 
+    }
+
+    public void CreateGraph(LineChart lineChart){
+        lineChart = (LineChart) findViewById(R.id.lineChart);
+        ArrayList<Entry> yAXES = new ArrayList<>();
+        double x = 0 ;
+        int numDataPoints = 1000;
+
+        for(int i=0;i<angle.size();i++){
+            yAXES.add(new Entry(Float.parseFloat(String.valueOf(angle.get(i))),i));
+        }
+        String[] xaxes = new String[sec.size()];
+        for(int i=0; i<sec.size();i++){
+            xaxes[i] = sec.get(i).toString();
+        }
+
+        ArrayList<ILineDataSet> lineDataSets = new ArrayList<>();
+
+        LineDataSet lineDataSet = new LineDataSet(yAXES,"Stretching Progress");
+        lineDataSet.setDrawCircles(false);
+        lineDataSet.setColor(Color.BLUE);
+
+        lineDataSets.add(lineDataSet);
+
+        lineChart.setData(new LineData(xaxes,lineDataSets));
+
+        lineChart.setVisibleXRangeMaximum(2000);
     }
 }
