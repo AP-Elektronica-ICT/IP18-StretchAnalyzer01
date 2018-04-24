@@ -93,11 +93,30 @@
 
     </LinearLayout>
 
-    <ListView
-        android:layout_width="match_parent"
+    <DatePicker
+        android:id="@+id/datePicker"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/listExercises">
+        android:scaleX="0.9"
+        android:scaleY="0.9"
+        android:datePickerMode="spinner">
+    </DatePicker>
 
-    </ListView>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:id="@+id/btnApplyAppSettings"
+        android:layout_gravity="center"
+        android:textColor="@color/colorPrimary"
+        android:text="Apply"/>
 
 </LinearLayout>
+
+
+    <!--<ListView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/listExercises">-->
+
+    <!--</ListView>-->

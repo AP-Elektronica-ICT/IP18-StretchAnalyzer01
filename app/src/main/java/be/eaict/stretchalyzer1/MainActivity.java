@@ -28,6 +28,8 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -55,30 +57,109 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Double> aZ = new ArrayList<>();
     private List<String> sec = new ArrayList<>();
     private List<String> angle = new ArrayList<>();
+    private List<List<String>> allAngles = new ArrayList<List<String>>();
+    private int day;
+    private int month;
+    private String monthString;
+    private int year;
+    private String query;
     private FirebaseDatabase database;
     private DatabaseReference myRef;
+    private FirebaseAuth mAuth;
+    private FirebaseUser currentUser;
     public static final int NOTIFICATION_ID = 1;
     TextView timer;
     ImageView profileSettings;
+    ImageView applicationSettings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
         database = FirebaseDatabase.getInstance();
-        myRef=database.getReference("kv88idO4A1Sjw7ejKz0b48A9z3F2").child("23-april-2018 14:23");
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                angle = (List<String>)(dataSnapshot.child("Values").getValue());
-                sec = (List<String>) dataSnapshot.child("TimeStamps").getValue();
+        Intent intent = getIntent();
+        if(intent.getStringExtra("flag") != null){
+            day = intent.getIntExtra("dayOfMonth", 0);
+            month = (intent.getIntExtra("monthOfYear", 0));
+            switch (month){
+                case 0:
+                    monthString = "january";
+                    break;
+                case 1:
+                    monthString = "february";
+                    break;
+                case 2:
+                    monthString = "march";
+                    break;
+                case 3:
+                    monthString = "april";
+                    break;
+                case 4:
+                    monthString = "may";
+                    break;
+                case 5:
+                    monthString = "june";
+                    break;
+                case 6:
+                    monthString = "july";
+                    break;
+                case 7:
+                    monthString = "august";
+                    break;
+                case 8:
+                    monthString = "september";
+                    break;
+                case 9:
+                    monthString = "october";
+                    break;
+                case 10:
+                    monthString = "november";
+                    break;
+                case 11:
+                    monthString = "december";
+                    break;
             }
+            year = intent.getIntExtra("year", 0);
+            query = day+"-"+monthString+"-"+year;
+            Log.d("query", query);
+            myRef = database.getReference(currentUser.getUid());
+            myRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.getValue() != null){
+                            for (DataSnapshot d: dataSnapshot.getChildren()){
+                                String key = d.getKey();
+                                if(key.contains(query)){
+                                    allAngles.add((List<String>)d.child("Values").getValue());
+                                }
+                                if(allAngles.size() > 0)
+                                Log.d("valueueu", allAngles.get(0).get(0));
+                            }
+                        }
+                }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
+        }
+//        myRef=database.getReference("kv88idO4A1Sjw7ejKz0b48A9z3F2").child("23-april-2018 14:23");
+//        myRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                angle = (List<String>)(dataSnapshot.child("Values").getValue());
+//                sec = (List<String>) dataSnapshot.child("TimeStamps").getValue();
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+
 
         final CountDownTimer countDownTimer = new CountDownTimer(12000, 1000){
 
@@ -92,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }.start();
 
-        Button startNow = (Button) this.findViewById(R.id.ButtonStart);
+        final Button startNow = (Button) this.findViewById(R.id.ButtonStart);
         startNow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -109,6 +190,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        applicationSettings = (ImageView) findViewById(R.id.imgApplicationSettings);
+        applicationSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, AppsettingsActivity.class);
                 startActivity(intent);
             }
         });
